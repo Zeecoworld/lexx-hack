@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RightsDesk — Plain-language legal help</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'core/style.css' %}">
+</head>
+<body>
+<form id="csrf-holder">{% csrf_token %}</form>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">RightsDesk · LexHack 2026</div>
+    <h1>Plain-language legal help</h1>
+    <p>Ask about a tenant, consumer, or labour issue in Nigeria, or paste a contract to see which clauses are worth a second look. Built for people, not lawyers.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="ask">Ask a question</button>
+    <button class="tab" data-tab="check">Check a document</button>
+  </div>
+
+  <section class="panel active" id="panel-ask">
+    <div id="chatlog"></div>
+    <div class="chips" id="chips">
+      <button class="chip">My landlord won't return my deposit</button>
+      <button class="chip">My employer hasn't paid my salary in 2 months</button>
+      <button class="chip">A store refuses to refund a faulty product</button>
+      <button class="chip">I was asked to sign an NDA before an interview</button>
+    </div>
+    <div class="inputrow">
+      <input type="text" id="askbox" placeholder="Describe your situation…">
+      <button class="primary" id="asksend">Ask</button>
+    </div>
+    <div class="note">Answers are general information based on common Nigerian consumer, tenancy and labour principles — not a substitute for a licensed lawyer.</div>
+  </section>
+
+  <section class="panel" id="panel-check">
+    <textarea id="doctext" placeholder="Paste a lease, employment offer, or service contract here…"></textarea>
+    <button class="primary" id="checksend">Analyze document</button>
+    <div class="status" id="checkstatus"></div>
+    <div class="results" id="results"></div>
+  </section>
+
+  <footer>RightsDesk — a LexHack 2026 submission. Not legal advice; for genuine disputes, consult a qualified lawyer or your state's legal aid office.</footer>
+</div>
+<script src="{% static 'core/app.js' %}"></script>
+</body>
+</html>
