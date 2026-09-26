@@ -60,5 +60,5 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# No external AI API is used — core/nlp_engine.py is a local, rule-based
+# No external AI API is used - core/nlp_engine.py is a local, rule-based
 # keyword classifier and clause detector. No API key required.

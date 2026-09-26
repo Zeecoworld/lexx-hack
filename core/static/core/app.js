@@ -31,7 +31,7 @@ async function sendAsk(text){
     botDiv.textContent = data.answer;
     turns.push({role:'assistant', content:data.answer});
   }catch(e){
-    botDiv.textContent = "Network error — please try again.";
+    botDiv.textContent = "Network error - please try again.";
   }finally{
     asksend.disabled = false;
   }
@@ -62,7 +62,7 @@ checksend.addEventListener('click', async ()=>{
     if(!res.ok){ checkstatus.textContent = data.error || "Something went wrong."; return; }
     checkstatus.textContent = "";
     const items = data.items || [];
-    if(!items.length){ checkstatus.textContent = "No clauses returned — try a longer excerpt."; }
+    if(!items.length){ checkstatus.textContent = "No clauses returned - try a longer excerpt."; }
     items.forEach(item=>{
       const risk = ['low','medium','high'].includes(item.risk) ? item.risk : 'medium';
       const card = el('div','clause '+risk);
@@ -72,7 +72,7 @@ checksend.addEventListener('click', async ()=>{
       results.appendChild(card);
     });
   }catch(e){
-    checkstatus.textContent = "Network error — please try again.";
+    checkstatus.textContent = "Network error - please try again.";
   }finally{
     checksend.disabled = false;
   }

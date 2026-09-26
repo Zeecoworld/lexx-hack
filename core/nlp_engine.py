@@ -1,17 +1,17 @@
 """
 Rule-based NLP engine for RightsDesk.
 
-No external API, no API key, no network call — everything here is plain
+No external API, no API key, no network call - everything here is plain
 Python keyword matching and templated responses. This trades some of the
 flexibility of an LLM for something that is fast, free, fully offline, and
 100% predictable for a live demo.
 """
 import re
 
-DISCLAIMER = "This is general information, not legal advice — for a real dispute, speak to a lawyer or your state's legal aid office."
+DISCLAIMER = "This is general information, not legal advice - for a real dispute, speak to a lawyer or your state's legal aid office."
 
 # ---------------------------------------------------------------------------
-# 1. "Ask a question" — keyword classifier + templated guidance
+# 1. "Ask a question" - keyword classifier + templated guidance
 # ---------------------------------------------------------------------------
 
 CATEGORIES = {
@@ -25,7 +25,7 @@ CATEGORIES = {
             "1. Re-read your tenancy agreement for the deposit/caution-fee clause.\n"
             "2. Put your request in writing (email or letter) and keep a copy.\n"
             "3. Take dated photos of the property's condition if you have them.\n"
-            "4. If ignored, report to your state's Tenancy/Rent Tribunal or Small Claims Court — "
+            "4. If ignored, report to your state's Tenancy/Rent Tribunal or Small Claims Court - "
             "many claims like this don't need a lawyer."
         ),
     },
@@ -33,13 +33,13 @@ CATEGORIES = {
         "keywords": ["evict", "quit notice", "kicked out", "landlord wants me out", "vacate"],
         "weight": 2,
         "reply": (
-            "In Nigeria, a landlord generally can't remove you without proper notice — the length "
+            "In Nigeria, a landlord generally can't remove you without proper notice - the length "
             "depends on your tenancy type (monthly, yearly) and must go through the courts, not "
             "self-help eviction (locking you out, seizing property).\n\n"
             "Next steps:\n"
             "1. Check what notice period your tenancy agreement requires.\n"
             "2. Ask for any eviction notice in writing.\n"
-            "3. Do not leave under threat alone — a landlord needs a court order to physically evict you.\n"
+            "3. Do not leave under threat alone - a landlord needs a court order to physically evict you.\n"
             "4. Contact a tenants' rights desk or lawyer if you feel pressured."
         ),
     },
@@ -93,7 +93,7 @@ CATEGORIES = {
             "1. Request the unpaid amount in writing, with dates it was due.\n"
             "2. Keep your employment contract, payslips, and any messages about the delay.\n"
             "3. Escalate to the Ministry of Labour and Employment (NECA/state labour office) if unresolved.\n"
-            "4. For persistent breaches, resignation with a claim for owed wages is also an option — "
+            "4. For persistent breaches, resignation with a claim for owed wages is also an option - "
             "get advice first."
         ),
     },
@@ -127,7 +127,7 @@ CATEGORIES = {
         "keywords": ["nda", "non-disclosure", "non compete", "sign", "asked to sign", "before an interview"],
         "weight": 1,
         "reply": (
-            "You're not obligated to sign any document — including an NDA — without reading it "
+            "You're not obligated to sign any document - including an NDA - without reading it "
             "fully and understanding what it restricts, especially before you're even hired.\n\n"
             "Next steps:\n"
             "1. Ask for a copy to review before signing (a reasonable request has a right to say no).\n"
@@ -139,7 +139,7 @@ CATEGORIES = {
 }
 
 FALLBACK_REPLY = (
-    "I couldn't match that to a specific tenancy, consumer, or labour issue — try describing it a "
+    "I couldn't match that to a specific tenancy, consumer, or labour issue - try describing it a "
     "bit more (for example: what happened, and who's involved).\n\n"
     "Some things I can help with:\n"
     "1. A landlord/tenant dispute (rent, deposit, eviction, repairs).\n"
@@ -167,32 +167,32 @@ def answer_question(text):
 
 
 # ---------------------------------------------------------------------------
-# 2. "Check a document" — regex/keyword clause-risk detector
+# 2. "Check a document" - regex/keyword clause-risk detector
 # ---------------------------------------------------------------------------
 
 CLAUSE_PATTERNS = [
     (r"\bautomatically renew|auto-renew|auto renew", "medium",
-     "Auto-renewal clauses can lock you into another term if you miss the cancellation window — check how much notice you must give to opt out."),
+     "Auto-renewal clauses can lock you into another term if you miss the cancellation window - check how much notice you must give to opt out."),
     (r"\bwaive[sd]?\b.{0,40}\bright", "high",
-     "This gives up a right you'd otherwise have — make sure you understand exactly what you're waiving before signing."),
+     "This gives up a right you'd otherwise have - make sure you understand exactly what you're waiving before signing."),
     (r"\bunlimited liability|\bno limit(ation)? of liability|\bindemnif", "high",
-     "You could be on the hook for costs or damages with no cap — this is worth negotiating or getting reviewed."),
+     "You could be on the hook for costs or damages with no cap - this is worth negotiating or getting reviewed."),
     (r"\bsole discretion\b", "medium",
      "Giving the other party unilateral decision-making power here leaves you little recourse if they act unfavourably."),
     (r"\bwithout (prior )?notice\b", "medium",
-     "Being terminated, charged, or changed \"without notice\" leaves you no time to react — check if this can be balanced with a notice period."),
+     "Being terminated, charged, or changed \"without notice\" leaves you no time to react - check if this can be balanced with a notice period."),
     (r"\bnon-compete|non compete|restrict.{0,20}(from working|employment)", "medium",
-     "Non-compete language can limit your ability to work elsewhere — check the time period and geographic scope for how broad it is."),
+     "Non-compete language can limit your ability to work elsewhere - check the time period and geographic scope for how broad it is."),
     (r"\bpenalt(y|ies)|liquidated damages|forfeit", "medium",
-     "Penalty or forfeiture clauses can be costly if you break a term — check the amount and what triggers it."),
+     "Penalty or forfeiture clauses can be costly if you break a term - check the amount and what triggers it."),
     (r"\bperpetuity|indefinite(ly)? period|no expiry", "medium",
      "An obligation with no end date (often in confidentiality clauses) can bind you far longer than expected."),
     (r"\bconfidential(ity)?\b", "low",
-     "A standard confidentiality clause — reasonable in most agreements, but check what information it actually covers."),
+     "A standard confidentiality clause - reasonable in most agreements, but check what information it actually covers."),
     (r"\bgoverning law\b|\bjurisdiction\b", "low",
-     "This sets which country/state's laws and courts apply — worth noting if you and the other party are in different places."),
+     "This sets which country/state's laws and courts apply - worth noting if you and the other party are in different places."),
     (r"\bentire agreement\b", "low",
-     "This means promises made outside the written contract (verbally, by email) may not be enforceable — get anything important in writing."),
+     "This means promises made outside the written contract (verbally, by email) may not be enforceable - get anything important in writing."),
 ]
 
 RISK_ORDER = {"high": 0, "medium": 1, "low": 2}
@@ -223,6 +223,6 @@ def analyze_document(text):
         return [{
             "excerpt": "No high-risk patterns detected in this text.",
             "risk": "low",
-            "why": "This is a keyword-based scan, not a full legal review — always read the whole document yourself or have a lawyer check anything important.",
+            "why": "This is a keyword-based scan, not a full legal review - always read the whole document yourself or have a lawyer check anything important.",
         }]
     return items[:8]
